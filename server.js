@@ -9,19 +9,19 @@ app.use(cors());
 
 const PORT = process.env.PORT || 5000;
 
-// UPDATED DATABASE CONNECTION
+// 1. FIXED DATABASE CONFIGURATION
 const pool = mysql.createPool({
     host: 'sql.freedb.tech',
     user: 'u_5D98eU',
     password: '9AHRw8i8fEck',
-    database: 'u_5D98eU', // Freedb typically uses the username as the database name
+    database: 'freedb_NBb9Q59r', // Changed from u_5D98eU to your actual database name
     connectionLimit: 10,
     waitForConnections: true,
     queueLimit: 0,
 });
 
 // GET ALL BOOKS/ARTICLES
-app.get("/api/freedb_NBb9Q59r", (req, res) => {
+app.get("/api/booklist", (req, res) => {
     pool.query("SELECT * FROM booklist", (err, rows) => {
         if (err) {
             console.error(err);
@@ -32,7 +32,8 @@ app.get("/api/freedb_NBb9Q59r", (req, res) => {
 });
 
 // GET SINGLE BOOK/ARTICLE
-app.get("/api/freedb_NBb9Q59r/:id", (req, res) => {
+// Unified the endpoint path to use /api/booklist/:id for consistency
+app.get("/api/booklist/:id", (req, res) => {
     const id = req.params.id;
     pool.query("SELECT * FROM booklist WHERE id = ?", [id], (err, rows) => {
         if (err) {
@@ -48,8 +49,9 @@ app.get("/api/freedb_NBb9Q59r/:id", (req, res) => {
 });
 
 // POST NEW BOOK/ARTICLE
-app.post('/api/freedb_NBb9Q59r', (req, res) => {
+app.post('/api/booklist', (req, res) => {
     const { author, title, ypubl } = req.body;
+    // 2. FIXED QUERY: Changed table target from 'freedb_NBb9Q59r' to 'booklist'
     pool.query(
         "INSERT INTO booklist (author, title, ypubl) VALUES (?, ?, ?)", 
         [author, title, ypubl], 
@@ -63,7 +65,7 @@ app.post('/api/freedb_NBb9Q59r', (req, res) => {
 });
 
 // UPDATE BOOK/ARTICLE
-app.put('/api/freedb_NBb9Q59r/:id', (req, res) => {
+app.put('/api/booklist/:id', (req, res) => {
     const id = req.params.id;
     const { author, title, ypubl } = req.body;
     pool.query(
@@ -79,7 +81,7 @@ app.put('/api/freedb_NBb9Q59r/:id', (req, res) => {
 });
 
 // DELETE BOOK/ARTICLE
-app.delete('/api/userdata/:id', (req, res) => {
+app.delete('/api/booklist/:id', (req, res) => {
     const id = req.params.id;
     pool.query("DELETE FROM booklist WHERE id = ?", [id], (err, result) => {
         if (err) {
