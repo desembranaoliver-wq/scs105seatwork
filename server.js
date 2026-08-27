@@ -21,8 +21,8 @@ const pool = mysql.createPool({
 });
 
 // GET ALL BOOKS/ARTICLES
-app.get("/api/booklist", (req, res) => {
-    pool.query("SELECT * FROM userdata", (err, rows) => {
+app.get("/api/freedb_NBb9Q59r", (req, res) => {
+    pool.query("SELECT * FROM booklist", (err, rows) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: err.message });
@@ -32,9 +32,9 @@ app.get("/api/booklist", (req, res) => {
 });
 
 // GET SINGLE BOOK/ARTICLE
-app.get("/api/booklist/:id", (req, res) => {
+app.get("/api/freedb_NBb9Q59r/:id", (req, res) => {
     const id = req.params.id;
-    pool.query("SELECT * FROM userdata WHERE id = ?", [id], (err, rows) => {
+    pool.query("SELECT * FROM booklist WHERE id = ?", [id], (err, rows) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: err.message });
@@ -48,10 +48,10 @@ app.get("/api/booklist/:id", (req, res) => {
 });
 
 // POST NEW BOOK/ARTICLE
-app.post('/api/booklist', (req, res) => {
+app.post('/api/freedb_NBb9Q59r', (req, res) => {
     const { author, title, ypubl } = req.body;
     pool.query(
-        "INSERT INTO userdata (author, title, ypubl) VALUES (?, ?, ?)", 
+        "INSERT INTO booklist (author, title, ypubl) VALUES (?, ?, ?)", 
         [author, title, ypubl], 
         (err, result) => {
             if (err) {
@@ -63,11 +63,11 @@ app.post('/api/booklist', (req, res) => {
 });
 
 // UPDATE BOOK/ARTICLE
-app.put('/api/booklist/:id', (req, res) => {
+app.put('/api/freedb_NBb9Q59r/:id', (req, res) => {
     const id = req.params.id;
     const { author, title, ypubl } = req.body;
     pool.query(
-        "UPDATE userdata SET author = ?, title = ?, ypubl = ? WHERE id = ?", 
+        "UPDATE booklist SET author = ?, title = ?, ypubl = ? WHERE id = ?", 
         [author, title, ypubl, id], 
         (err, result) => {
             if (err) {
@@ -79,9 +79,9 @@ app.put('/api/booklist/:id', (req, res) => {
 });
 
 // DELETE BOOK/ARTICLE
-app.delete('/api/booklist/:id', (req, res) => {
+app.delete('/api/userdata/:id', (req, res) => {
     const id = req.params.id;
-    pool.query("DELETE FROM userdata WHERE id = ?", [id], (err, result) => {
+    pool.query("DELETE FROM booklist WHERE id = ?", [id], (err, result) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: err.message });
