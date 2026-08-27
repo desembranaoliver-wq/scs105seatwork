@@ -47,21 +47,18 @@ app.get("/api/booklist/:id", (req, res) => {
     });
 });
 
-// POST NEW BOOK/ARTICLE (UPDATED TO MANUALLY RECEIVE AND SAVE ID)
+// POST NEW BOOK/ARTICLE
 app.post('/api/booklist', (req, res) => {
-    // 1. Added id to the destructuring block
     const { id, author, title, ypubl } = req.body;
     
-    // 2. Added id column and an extra placeholder (?) to the SQL statement
     pool.query(
         "INSERT INTO booklist (id, author, title, ypubl) VALUES (?, ?, ?, ?)", 
-        [id, author, title, ypubl], // 3. Added id variable to query inputs
+        [id, author, title, ypubl], 
         (err, result) => {
             if (err) {
                 console.error(err);
                 return res.status(500).json({ error: err.message });
             }
-            // 4. Returns the manual id back instead of result.insertId
             res.json({ msg: "Data inserted successfully", id: id }); 
     }); 
 });
@@ -80,18 +77,6 @@ app.put('/api/booklist/:id', (req, res) => {
             }
             res.json({ msg: `Successfully updated ID ${id}` });
     }); 
-});
-
-// DELETE BOOK/ARTICLE
-app.delete('/api/booklist/:id', (req, res) => {
-    const id = req.params.id;
-    pool.query("DELETE FROM booklist WHERE id = ?", [id], (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ error: err.message });
-        }
-        res.json({ msg: `Successfully deleted ID ${id}` });
-    });
 });
 
 app.listen(PORT, () => {
