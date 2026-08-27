@@ -9,12 +9,12 @@ app.use(cors());
 
 const PORT = process.env.PORT || 5000;
 
-// 1. FIXED DATABASE CONFIGURATION
+// FIXED DATABASE CONFIGURATION
 const pool = mysql.createPool({
     host: 'sql.freedb.tech',
     user: 'u_5D98eU',
     password: '9AHRw8i8fEck',
-    database: 'freedb_NBb9Q59r', // Changed from u_5D98eU to your actual database name
+    database: 'freedb_NBb9Q59r', 
     connectionLimit: 10,
     waitForConnections: true,
     queueLimit: 0,
@@ -32,7 +32,6 @@ app.get("/api/booklist", (req, res) => {
 });
 
 // GET SINGLE BOOK/ARTICLE
-// Unified the endpoint path to use /api/booklist/:id for consistency
 app.get("/api/booklist/:id", (req, res) => {
     const id = req.params.id;
     pool.query("SELECT * FROM booklist WHERE id = ?", [id], (err, rows) => {
@@ -48,19 +47,22 @@ app.get("/api/booklist/:id", (req, res) => {
     });
 });
 
-// POST NEW BOOK/ARTICLE
+// POST NEW BOOK/ARTICLE (UPDATED TO MANUALLY RECEIVE AND SAVE ID)
 app.post('/api/booklist', (req, res) => {
-    const { author, title, ypubl } = req.body;
-    // 2. FIXED QUERY: Changed table target from 'freedb_NBb9Q59r' to 'booklist'
+    // 1. Added id to the destructuring block
+    const { id, author, title, ypubl } = req.body;
+    
+    // 2. Added id column and an extra placeholder (?) to the SQL statement
     pool.query(
-        "INSERT INTO booklist (author, title, ypubl) VALUES (?, ?, ?)", 
-        [author, title, ypubl], 
+        "INSERT INTO booklist (id, author, title, ypubl) VALUES (?, ?, ?, ?)", 
+        [id, author, title, ypubl], // 3. Added id variable to query inputs
         (err, result) => {
             if (err) {
                 console.error(err);
                 return res.status(500).json({ error: err.message });
             }
-            res.json({ msg: "Data inserted successfully", id: result.insertId });
+            // 4. Returns the manual id back instead of result.insertId
+            res.json({ msg: "Data inserted successfully", id: id }); 
     }); 
 });
 
